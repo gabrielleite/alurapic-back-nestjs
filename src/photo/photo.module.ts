@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { PhotoController } from './photo.controller';
 
-@Module({})
+@Module({
+  controllers: [PhotoController]
+})
 export class PhotoModule {}
