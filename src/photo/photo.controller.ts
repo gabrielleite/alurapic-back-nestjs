@@ -25,7 +25,7 @@ export class PhotoController {
     ];
 
     @Get()
-    public list(): Array<any> {
+    public findAll(): Array<any> {
         return this.photos;
     }
 }
