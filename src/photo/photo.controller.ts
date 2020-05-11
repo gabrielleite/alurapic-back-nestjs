@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put } from '@nestjs/common';
 
 @Controller('photos')
 export class PhotoController {
@@ -46,5 +46,17 @@ export class PhotoController {
         this.photos.push(newPhoto);
 
         return newPhoto;
+    }
+
+    @Put(':id')
+    public update(@Param('id') id: number, @Body() photoToUpdate: any): any {
+        const indexFound = this.photos.findIndex(photo => photo.id == id);
+        const updatedPhoto = {
+            id,
+            ...photoToUpdate
+        };
+        this.photos[indexFound] = updatedPhoto;
+
+        return updatedPhoto;
     }
 }
