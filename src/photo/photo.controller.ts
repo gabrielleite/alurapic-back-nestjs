@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 
 @Controller('photos')
 export class PhotoController {
@@ -27,5 +27,11 @@ export class PhotoController {
     @Get()
     public findAll(): Array<any> {
         return this.photos;
+    }
+
+    @Get(':id')
+    public findById(@Param('id') id: number): any {
+        const photoFound = this.photos.find(photo => photo.id == id);
+        return photoFound;
     }
 }
