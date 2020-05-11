@@ -1,8 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 
 @Controller('photos')
 export class PhotoController {
 
+    private countId = 4;
     private photos: Array<any> = [
         {
             id: 1,
@@ -33,5 +34,17 @@ export class PhotoController {
     public findById(@Param('id') id: number): any {
         const photoFound = this.photos.find(photo => photo.id == id);
         return photoFound;
+    }
+
+    @Post()
+    public create(@Body() photo: any): any {
+        const newPhoto = {
+            id: this.countId++,
+            ...photo
+        };
+
+        this.photos.push(newPhoto);
+
+        return newPhoto;
     }
 }
