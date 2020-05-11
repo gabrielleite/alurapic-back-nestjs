@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Put } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
 
 @Controller('photos')
 export class PhotoController {
@@ -58,5 +58,10 @@ export class PhotoController {
         this.photos[indexFound] = updatedPhoto;
 
         return updatedPhoto;
+    }
+    
+    @Delete(':id')
+    public remove(@Param('id') id: number): void {
+        this.photos = this.photos.filter(photo => photo.id != id);
     }
 }
