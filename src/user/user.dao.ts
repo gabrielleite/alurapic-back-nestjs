@@ -1,31 +1,32 @@
 import { Injectable } from '@nestjs/common';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserDao {
     private countId = 4;
-    private users: Array<any> = [
-        {
+    private users: Array<User> = [
+        new User({
             id: 1,
-            name: 'Gabriel Leite',
+            fullName: 'Gabriel Leite',
             email: 'gabriel.leite@alura.com.br',
             password: '12345'
-        },
-        {
+        }),
+        new User({
             id: 2,
-            name: 'David Neves',
+            fullName: 'David Neves',
             email: 'david.neves@alura.com.br',
             password: '12345'
-        },
-        {
+        }),
+        new User({
             id: 3,
-            name: 'Vanessa Tonini',
+            fullName: 'Vanessa Tonini',
             email: 'vanessa.tonini@alura.com.br',
             password: '12345'
-        }
+        })
     ];
 
-    public create(user: any): any {
-        const newUser = {
+    public create(user: User): User {
+        const newUser: User = {
             id: this.countId++,
             ...user
         };
