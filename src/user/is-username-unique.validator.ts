@@ -1,0 +1,29 @@
+import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments, ValidationOptions, registerDecorator } from 'class-validator';
+import { Injectable } from '@nestjs/common';
+import { UserDao } from './user.dao';
+
+@Injectable()
+@ValidatorConstraint({ async: true })
+export class IsUsernameUniqueConstraint implements ValidatorConstraintInterface {
+
+    constructor(private userDao: UserDao) {}
+    
+    validate(username: string, args: ValidationArguments) {
+        return typeof username == 'string'
+                    ? !!!this.userDao.findByUsername(username)
+                    : false;
+    }
+
+}
+
+export function IsUsernameUnique(validationOptions?: ValidationOptions) {
+   return function (object: Object, propertyName: string) {
+        registerDecorator({
+            target: object.constructor,
+            propertyName: propertyName,
+            options: validationOptions,
+            constraints: [],
+            validator: IsUsernameUniqueConstraint
+        });
+   };
+}

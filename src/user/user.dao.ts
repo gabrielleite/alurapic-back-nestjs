@@ -35,4 +35,9 @@ export class UserDao {
 
         return newUser;
     }
+
+    public findByUsername(username: string): User {
+        const userFound = this.users.find((user: User) => user.username == username);
+        return userFound;
+    }
 }
