@@ -1,4 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
+import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
+import { NestResponse } from 'src/core/http/nest-response';
 import { UserDao } from './user.dao';
 import { User } from './user.entity';
 
@@ -8,8 +10,14 @@ export class UserController {
     constructor(private userDao: UserDao) {}
     
     @Post()
-    public create(@Body() user: User): User {
+    public create(@Body() user: User): NestResponse {
         const newUser = this.userDao.create(user);
-        return newUser;
+        return new NestResponseBuilder()
+                .withStatus(HttpStatus.CREATED)
+                .withHeaders({
+                    'Location': `users/${newUser.id}`
+                })
+                .withBody(newUser)
+                .build();
     }
 }
