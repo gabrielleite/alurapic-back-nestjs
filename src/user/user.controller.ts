@@ -10,8 +10,8 @@ export class UserController {
     constructor(private userDao: UserDao) {}
     
     @Post()
-    public create(@Body() user: User): NestResponse {
-        const newUser = this.userDao.create(user);
+    public async create(@Body() user: User): Promise<NestResponse> {
+        const newUser = await this.userDao.create(user);
         return new NestResponseBuilder()
                 .withStatus(HttpStatus.CREATED)
                 .withHeaders({

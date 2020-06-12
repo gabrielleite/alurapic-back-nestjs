@@ -8,9 +8,9 @@ export class IsUsernameUniqueConstraint implements ValidatorConstraintInterface 
 
     constructor(private userDao: UserDao) {}
     
-    validate(username: string, args: ValidationArguments) {
+    async validate(username: string, args: ValidationArguments) {
         return typeof username == 'string'
-                    ? !!!this.userDao.findByUsername(username)
+                    ? !!!(await this.userDao.findByUsername(username)).length
                     : false;
     }
 

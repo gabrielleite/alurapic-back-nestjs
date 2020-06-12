@@ -1,43 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { Connection } from 'typeorm';
 import { User } from './user.entity';
 
 @Injectable()
 export class UserDao {
-    private countId = 4;
-    private users: Array<User> = [
-        new User({
-            id: 1,
-            fullName: 'Gabriel Leite',
-            email: 'gabriel.leite@alura.com.br',
-            password: '12345'
-        }),
-        new User({
-            id: 2,
-            fullName: 'David Neves',
-            email: 'david.neves@alura.com.br',
-            password: '12345'
-        }),
-        new User({
-            id: 3,
-            fullName: 'Vanessa Tonini',
-            email: 'vanessa.tonini@alura.com.br',
-            password: '12345'
-        })
-    ];
 
-    public create(user: User): User {
-        const newUser: User = {
-            id: this.countId++,
+    constructor(private connection: Connection) {}
+
+    public async create(user: User): Promise<User> {
+        const {insertId} = await this.connection.query('INSERT INTO users SET ?', [user]);
+        const insertedUser: User = {
+            id: insertId,
             ...user
         };
-
-        this.users.push(newUser);
-
-        return newUser;
+        return insertedUser;
     }
 
-    public findByUsername(username: string): User {
-        const userFound = this.users.find((user: User) => user.username == username);
-        return userFound;
+    public findByUsername(username: string): Promise<User[]> {
+        const usersFound = this.connection.query('SELECT * FROM users WHERE username = ?', [username]);
+        return usersFound;
     }
 }

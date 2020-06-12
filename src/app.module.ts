@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PhotoModule } from './photo/photo.module';
@@ -9,6 +11,19 @@ import { ResponseTransformInterceptor } from './core/response-transform.intercep
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: '',
+      database: 'alurapic',
+      entities: [
+        join(__dirname, '**', '*.entity.{ts,js}')
+      ],
+      synchronize: true,
+      logging: true
+    }),
     PhotoModule,
     UserModule
   ],
