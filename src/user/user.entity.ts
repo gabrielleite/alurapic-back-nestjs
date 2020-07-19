@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsEmail } from 'class-validator';
+import { Exclude } from 'class-transformer';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { IsUsernameUnique } from './is-username-unique.validator';
 
@@ -21,6 +22,9 @@ export class User {
     readonly email: string;
 
     @Column()
+    @Exclude({
+        toPlainOnly: true
+    })
     @IsNotEmpty()
     readonly password: string;
 

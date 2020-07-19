@@ -12,10 +12,10 @@ export class UserDao {
 
     public async create(user: User): Promise<User> {
         const { raw: {insertId} } = await this.userRepository.insert(user);
-        const insertedUser: User = {
+        const insertedUser: User = new User({
             id: insertId,
             ...user
-        };
+        });
         return insertedUser;
     }
 
