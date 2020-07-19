@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { User } from './user.entity';
 
 @Injectable()
 export class UserDao {
-
-    constructor(private connection: Connection) {}
+    private readonly userRepository: Repository<User>;
+    
+    constructor(connection: Connection) {
+        this.userRepository = connection.getRepository(User);
+    }
 
     public async create(user: User): Promise<User> {
-        const {insertId} = await this.connection.query('INSERT INTO users SET ?', [user]);
+        const { raw: {insertId} } = await this.userRepository.insert(user);
         const insertedUser: User = {
             id: insertId,
             ...user
@@ -16,8 +19,10 @@ export class UserDao {
         return insertedUser;
     }
 
-    public findByUsername(username: string): Promise<User[]> {
-        const usersFound = this.connection.query('SELECT * FROM users WHERE username = ?', [username]);
-        return usersFound;
+    public findByUsername(username: string): Promise<User> {
+        const userFound = this.userRepository.findOne({
+            where: { username }
+        });
+        return userFound;
     }
 }
