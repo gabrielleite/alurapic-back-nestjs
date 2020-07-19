@@ -4,7 +4,9 @@ export class NestResponseBuilder {
     private response: NestResponse = {
         status: 200,
         headers: {},
-        body: {}
+        body: {},
+        xmlRootTagName: '',
+        xmlElementTagName: ''
     };
 
     public withStatus(status: number): NestResponseBuilder {
@@ -22,6 +24,18 @@ export class NestResponseBuilder {
     public withBody(body): NestResponseBuilder {
 
         this.response.body = body;
+        return this;
+    }
+
+    public withXmlRootTagName(xmlRootTagName: string): NestResponseBuilder {
+
+        this.response.xmlRootTagName = xmlRootTagName;
+        return this;
+    }
+
+    public withXmlElementTagName(xmlElementTagName: string): NestResponseBuilder {
+        
+        this.response.xmlElementTagName = xmlElementTagName;
         return this;
     }
 

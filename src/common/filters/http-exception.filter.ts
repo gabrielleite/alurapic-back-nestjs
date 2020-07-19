@@ -1,5 +1,7 @@
 import { Catch, HttpException, ExceptionFilter, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { AbstractHttpAdapter, HttpAdapterHost } from '@nestjs/core';
+import { negotiateContent } from 'src/core/utils/content-negotiation';
+import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 
 @Catch(Error)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -14,7 +16,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse();
         const request = ctx.getRequest();
 
-        const { status, body } = exception instanceof HttpException
+        let { status, body } = exception instanceof HttpException
                                     ? {
                                         status: exception.getStatus(),
                                         body: exception.getResponse()
@@ -28,6 +30,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
                                         }
                                     };
 
+        if (status != HttpStatus.NOT_ACCEPTABLE) {
+            let nestResponse = new NestResponseBuilder()
+                                    .withBody(body)
+                                    .withStatus(status)
+                                    .withXmlRootTagName('exception')
+                                    .build();
+            nestResponse = negotiateContent(request, nestResponse);
+
+            body = nestResponse.body;
+        }
         this.httpAdapter.reply(response, body, status);
     }
 }

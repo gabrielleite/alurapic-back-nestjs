@@ -9,6 +9,7 @@ import { PhotoModule } from './photo/photo.module';
 import { UserModule } from './user/user.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseTransformInterceptor } from './core/response-transform.interceptor';
+import { ContentNegotiationInterceptor } from './core/http/content-negotiation.interceptor';
 
 @Module({
   imports: [
@@ -42,7 +43,11 @@ import { ResponseTransformInterceptor } from './core/response-transform.intercep
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseTransformInterceptor
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ContentNegotiationInterceptor
     }
-  ],
+  ]
 })
 export class AppModule {}

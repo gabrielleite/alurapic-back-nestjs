@@ -20,6 +20,7 @@ export class UserController {
         
         return new NestResponseBuilder()
                     .withBody(userFound)
+                    .withXmlRootTagName('user')
                     .build();
     }
     
@@ -32,6 +33,7 @@ export class UserController {
                     'Location': `users/${newUser.username}`
                 })
                 .withBody(newUser)
+                .withXmlRootTagName('user')
                 .build();
     }
 }
