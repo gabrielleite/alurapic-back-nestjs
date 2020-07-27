@@ -1,8 +1,8 @@
-import { NestInterceptor, Injectable, ExecutionContext, CallHandler, HttpException, HttpStatus } from '@nestjs/common';
+import { NestInterceptor, Injectable, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NestResponse } from './nest-response';
-import { negotiateContent, isAcceptableRequest } from 'src/core/utils/content-negotiation';
+import { negotiateContent, mediaTypeVerify } from 'src/core/utils/content-negotiation';
 
 @Injectable()
 export class ContentNegotiationInterceptor implements NestInterceptor {
@@ -11,12 +11,7 @@ export class ContentNegotiationInterceptor implements NestInterceptor {
         const httpContext = context.switchToHttp();
         const request = httpContext.getRequest();
 
-        if (!isAcceptableRequest(request)) {
-            throw new HttpException({
-                status: HttpStatus.NOT_ACCEPTABLE,
-                message: 'Media type not acceptable',
-            }, HttpStatus.NOT_ACCEPTABLE);
-        }
+        mediaTypeVerify(request);
         
         return next
                 .handle()

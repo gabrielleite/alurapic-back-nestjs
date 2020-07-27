@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpStatus, Get, Param, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, Get, Param, NotFoundException } from '@nestjs/common';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { NestResponse } from 'src/core/http/nest-response';
 import { UserDao } from './user.dao';
@@ -12,11 +12,12 @@ export class UserController {
     @Get(':username')
     public async findByUsername(@Param('username') username: string) {
         const userFound: User = await this.userDao.findByUsername(username);
-        if (!userFound)
-            throw new HttpException({
-                status: HttpStatus.NOT_FOUND,
+        if (!userFound) {
+            throw new NotFoundException({
+                status: HttpStatus.NOT_ACCEPTABLE,
                 message: 'User not found',
-            }, HttpStatus.NOT_FOUND);
+            });
+        }
         
         return new NestResponseBuilder()
                     .withBody(userFound)

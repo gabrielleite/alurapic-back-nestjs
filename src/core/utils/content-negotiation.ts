@@ -1,11 +1,21 @@
+import { NotAcceptableException, HttpStatus } from '@nestjs/common';
 import { parse } from 'js2xmlparser';
 import { MediaType } from '../http/media-type';
 
 const ACCEPTABLE_TYPES = Object.values(MediaType)
 
-export const isAcceptableRequest = (request) => {
+const isAcceptableRequest = (request) => {
     return ACCEPTABLE_TYPES.includes(request.headers.accept)
 };
+
+export const mediaTypeVerify = (request) => {
+    if (!isAcceptableRequest(request)) {
+        throw new NotAcceptableException({
+            status: HttpStatus.NOT_ACCEPTABLE,
+            message: 'Media type not acceptable',
+        });
+    }
+}
 
 export const negotiateContent = (request, handlerResponse) => {
     const { body, xmlRootTagName, xmlElementTagName } = handlerResponse;
